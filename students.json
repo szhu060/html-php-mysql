@@ -1,0 +1,21 @@
+
+
+  [   
+    
+    {
+      "stuID": "001",
+      "stuName": "Liu Xin",
+      "description": "Finance graduate student from OU"
+    },
+    {
+      "stuID": "002",
+      "stuName": "Chen Kai",
+      "description": "Computer graduate student from CU"
+    },
+    {
+      "stuID": "003",
+      "stuName": "Zhou Jiyuan",
+      "description": "Another Computer graduate student from CU"
+    }
+    
+  ]

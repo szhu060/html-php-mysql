@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ajax Assignment</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+	//question 1 (completed!)
+
+
+		$("input[name='showHint']").keyup(function(){
+	        var inputvalue = $("input[name='showHint']").val();
+	        // $('#txtHint').html(q);
+	        if(inputvalue.length == 0){$('#txtHint').html("please input first name");}
+	        else{
+	        	$.ajax({
+			    
+			 	url: "gethint.php",
+			    
+			    data: {
+			        q: inputvalue,
+			    },
+			 
+			    type: "POST",
+			 			    
+			    dataType : "json",
+			    success : function(data){
+			    	$('#txtHint').html(data);
+			    	
+			    		}
+					})
+
+	        	}
+	    })
+
+
+	//question 2
+		$("input[name='submit']").click(function(event){
+			event.preventDefault();
+			var in_name = $("input[name='username']").val();
+			
+   			var in_password = $("input[name='password']").val();
+	   		ru_name = in_name ? in_name :"FAIL: YOU HAVE TO INPUT USERNAME!!";
+	   		ru_password = in_password ? in_password :"FAIL: YOU HAVE TO INPUT PASSWORD~~";
+	   		
+	   		$.ajax({
+			    
+			 	url: "ajax-ass-327.php",
+			    
+			    data: {
+			        name_tophp: ru_name,
+			        password_tophp:ru_password
+			    },
+			 
+			    type: "POST",
+			 			    
+			    dataType : "json",
+			    success : function(data){
+			    	$('#msg').html(data.name_tophp + data.password_tophp + "successfully");    	
+			    		}
+					})
+	   		.fail(function( xhr, status, errorThrown ) {
+			  alert( "Sorry, there was a problem! Your usename or password is wrong" );
+			  console.log( "Error: " + errorThrown );
+			  console.log( "Status: " + status );
+			  console.dir( xhr );
+			})
+		})
+
+	//question 3
+			$("input[name='s_id']").keyup(function(){
+				
+				// $('#q3').html($(this).val());
+					var xhr = new XMLHttpRequest();				
+					xhr.open('GET',"students.json",true);
+					xhr.responseType = 'text';
+					xhr.send();
+				
+					xhr.onload = function(){
+						if(xhr.status === 200){
+							var myStuff = JSON.parse(xhr.responseText);
+							console.log(myStuff);
+
+							// for(i=0 ; i< myStuff.length; i++){
+							// 	console.log(myStuff[i]["stuID"]);
+							// 	console.log(myStuff[i]["stuName"]);
+							// 	console.log(myStuff[i]["description"]);
+
+							// }//end loop
+							var studentid = $("input[name='s_id']").val();
+
+							var myString = "";
+							for(i=0 ; i< myStuff.length; i++){
+								if(studentid == myStuff[i]["stuID"]) {
+									$("input[name='s_name']").val(myStuff[i]["stuName"]);
+									$("input[name='s_des']").val(myStuff[i]["description"]);
+								}else{
+									$("input[name='s_name']").val("no exist");
+									$("input[name='s_des']").val("no exist");
+								}
+								// myString += myStuff[i]["stuID"]+"<br>"+
+								// myStuff[i]["stuName"]+"<br>"+
+								// myStuff[i]["description"]+"<br>";
+
+							}//end loop
+							
+							
+						}//end if
+					}//end function
+
+	   		 })
+
+	//question 4
+	$("button#select").click(function(){
+		var id = $("input[name='sel_p_id']").val();
+		var name = $("input[name='sel_p_name']").val();
+		var para = "id=" + id +"&name="+name;
+		$.get("select.php?"+para,function(data){
+			document.getElementById("result").innerHTML=data;
+		});
+	});
+
+	$("button#update").click(function(){
+		var id = $("input[name='upd_p_id']").val();
+		var origin = $("input[name='upd_p_q_orign']").val();
+		var cur = $("input[name='upd_p_q_cur']").val();
+
+		var para = "id=" + id +"&origin="+origin+"&cur="+cur;
+		$.get("update.php?"+para,function(data){
+			document.getElementById("result").innerHTML=data;
+		});
+	});
+
+	$("button#delete").click(function(){
+		var id = $("input[name='del_p_id']").val();
+		var para = "id=" + id ;
+		$.get("delete.php?"+para,function(data){
+			document.getElementById("result").innerHTML=data;
+		});
+	});
+
+
+
+
+})
+</script>
+</head>
+<body>
+<p>question 1</p>
+<p><b>Start typing a name in the input field below:</b></p>
+<form> 
+First name: <input type="text" name="showHint">
+</form>
+<p>Suggestions: <span id="txtHint"></span></p>
+
+
+<br><br><br>
+<p>question 2</p>
+<form method='POST'>
+	username:
+	<input type="text" name="username">
+ 	<br>
+	password:
+	<input type="password" name="password">
+	<input type="submit" name="submit">
+</form>
+<div id="msg"></div>
+
+
+<br><br><br>
+<p>question 3</p>
+
+<label>
+	Please input Student ID:
+	<input type="text" name="s_id">
+</label><br>
+<form>
+<label>
+	Student Name:
+	<input type="text" name="s_name" readonly>
+</label><br>
+<label>
+	Student Description:
+	<input type="text" name="s_des" readonly>
+</label>
+</form>
+<div id="q3"></div>
+
+
+<br><br><br>
+<p id="q4">question 4</p>
+<style type="text/css">
+.active{
+	display: inline-block;
+}
+.hidden{
+	display: none;
+}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('a').click(function(){
+		var para = $(this).attr('id').substr(0,6);
+		$('.'+para).removeClass('hidden').addClass('active').siblings().removeClass('active').addClass('hidden');
+	})
+
+	$('input').change(function(){
+		//disable select button when input is not filled.
+		if($("input[name='sel_p_id']").val()!=""||$("input[name='sel_p_name']").val()!=""){
+			$(".select button").attr('disabled',false);
+		}else{
+			$(".select button").attr('disabled',true);
+		}
+
+		//complete the jquery control for update and delete button.
+	})
+
+
+})
+</script>
+<div><a id="select_c" href="#q4">Select</a>|<a id="update_c" href="#q4">Update</a>|<a id="delete_c" href="#q4">Delete</a></div>
+<div>
+<div class="select active">
+	Product ID: <input type="text" name="sel_p_id"><br>
+	Product Name:<input type="text" name="sel_p_name"><br>
+	<button id="select" disabled>Select</button>
+</div>
+<div class="update hidden">
+	Product ID: <input type="text" name="upd_p_id"><br>
+	Quantity from&nbsp;<input type="number" name="upd_p_q_orign">&nbsp;to&nbsp;<input type="number" name="upd_p_q_cur"><br>
+	<button id="update">Update</button>
+</div>
+<div class="delete hidden">
+	Product ID: <input type="text" name="del_p_id"><br>
+	<button id="delete">Delete</button>
+</div>
+</div>
+<br>
+<div id="result">
+	
+</div>
+<br><br><br>
+<p id="q5">question 5</p>
+<script type="text/javascript">
+//Please give the output of the following code:
+const arr = [10, 12, 15, 21];
+// for (var i = 0; i < arr.length; i++) {
+//   setTimeout(function() {
+//     console.log('Index: ' + i + ', element: ' + arr[i]);
+//   }, 3000);
+// }
+for (var i = 0; i < arr.length; i++) {
+  var a = function(i){
+  	return function(){
+  		console.log('Index: ' + i + ', element: ' + arr[i]);
+  	}
+  }
+  setTimeout(a(i),3000);// setTimeout()在for循环里，不管循环多少次，都是在最后一次才执行，这是他的一个特性！
+}
+
+//Figure it out how to ouput the value it should be and give the solution below.
+</script>
+</body>
+</html>
